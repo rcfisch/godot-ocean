@@ -1,0 +1,45 @@
+[gd_scene load_steps=8 format=3 uid="uid://babl3h6eiig1w"]
+
+[ext_resource type="Texture2D" uid="uid://doe31f8xs1m6u" path="res://materials/panoramic-view-sea.jpg" id="1_53qi8"]
+[ext_resource type="Material" uid="uid://cdkymeqwedqrd" path="res://materials/ocean.material" id="1_e7451"]
+
+[sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_jqhs2"]
+panorama = ExtResource("1_53qi8")
+
+[sub_resource type="Sky" id="Sky_8fnq1"]
+sky_material = SubResource("PanoramaSkyMaterial_jqhs2")
+
+[sub_resource type="Environment" id="Environment_cj1os"]
+background_mode = 2
+background_energy_multiplier = 0.8
+sky = SubResource("Sky_8fnq1")
+ambient_light_color = Color(1, 1, 1, 1)
+adjustment_enabled = true
+
+[sub_resource type="QuadMesh" id="QuadMesh_pd2vp"]
+size = Vector2(10.5, 10.5)
+subdivide_width = 200
+subdivide_depth = 200
+orientation = 1
+
+[sub_resource type="BoxMesh" id="BoxMesh_53k4s"]
+
+[node name="World" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_cj1os")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="WorldEnvironment"]
+transform = Transform3D(1, 0, 0, 0, 0.34202, 0.939693, 0, -0.939693, 0.34202, 0, 0, 0)
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.38419e-07, 0.598286, 1.40172)
+
+[node name="Water" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.108504, 0)
+mesh = SubResource("QuadMesh_pd2vp")
+surface_material_override/0 = ExtResource("1_e7451")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.895355, 0.445354, 0, -0.402713, 0.809628, -0.426995, -0.190164, 0.382312, 0.904254, -0.00772572, -0.508911, 0.245046)
+mesh = SubResource("BoxMesh_53k4s")
