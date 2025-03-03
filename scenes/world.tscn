@@ -14,6 +14,7 @@ background_mode = 2
 background_energy_multiplier = 0.8
 sky = SubResource("Sky_8fnq1")
 ambient_light_color = Color(1, 1, 1, 1)
+reflected_light_source = 2
 adjustment_enabled = true
 
 [sub_resource type="QuadMesh" id="QuadMesh_pd2vp"]
@@ -36,10 +37,10 @@ transform = Transform3D(1, 0, 0, 0, 0.34202, 0.939693, 0, -0.939693, 0.34202, 0,
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.38419e-07, 0.598286, 1.40172)
 
 [node name="Water" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.108504, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0885985, -0.356861, -0.220471)
 mesh = SubResource("QuadMesh_pd2vp")
 surface_material_override/0 = ExtResource("1_e7451")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-transform = Transform3D(0.895355, 0.445354, 0, -0.402713, 0.809628, -0.426995, -0.190164, 0.382312, 0.904254, -0.00772572, -0.508911, 0.245046)
+transform = Transform3D(0.895355, 0.445354, 0, -0.402713, 0.809628, -0.426995, -0.190164, 0.382312, 0.904254, 0.0709194, -2.10619, -0.26235)
 mesh = SubResource("BoxMesh_53k4s")
