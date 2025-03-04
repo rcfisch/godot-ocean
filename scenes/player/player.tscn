@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=3 uid="uid://jgchoanlbffg"]
+
+[ext_resource type="Script" uid="uid://b0nhpumajqi4w" path="res://scripts/player/player.gd" id="1_dovo2"]
+[ext_resource type="PackedScene" uid="uid://bnws1oqigl3uo" path="res://scenes/player/camera.tscn" id="2_gmlin"]
+
+[node name="Player" type="CharacterBody3D"]
+script = ExtResource("1_dovo2")
+
+[node name="Camera" parent="." instance=ExtResource("2_gmlin")]
