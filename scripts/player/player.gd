@@ -7,6 +7,8 @@ extends CharacterBody3D
 
 @export_range(0.1, 3.0, 0.1, "or_greater") var camera_sens: float = 1
 @export var drag : float = 0.3 # Lerp value: 0 = no drag, 1 = instant stop
+@export var gravity : float = 10
+@export var max_fall_speed : float = 200
 
 var mouse_captured: bool = false
 
@@ -14,6 +16,7 @@ var move_dir: Vector2 # Input direction for movement
 var look_dir: Vector2 # Input direction for look/aim
 var vert_dir: int # Input direction for moving up/down
 var walk_vel: Vector3 # Walking velocity 
+var grav_vel: float # Gravity velocity 
 @onready var camera : Camera3D = $Camera
 
 func _ready() -> void:
@@ -28,6 +31,11 @@ func _input(event: InputEvent) -> void:
  			
 	
 func _physics_process(delta: float) -> void:
+	if GlobalVar.player_is_surfaced and !is_on_floor():
+		if grav_vel < max_fall_speed:
+			grav_vel -= gravity
+	else: grav_vel = 0
+	#print(GlobalVar.player_is_surfaced)
 	if Input.is_action_pressed("sprint"):
 		speed = 350
 		acceleration = 1000
@@ -40,9 +48,9 @@ func _physics_process(delta: float) -> void:
 		velocity = _walk(delta)
 	else:
 		if Input.is_action_pressed("down") or Input.is_action_pressed("up") or Input.is_action_pressed("move_left") or Input.is_action_pressed("move_right") or Input.is_action_pressed("move_backwards") or Input.is_action_pressed("move_forward"):
-			velocity = lerp(velocity, swim(delta), 1)
+			velocity = lerp(velocity, swim(delta) + apply_gravity(delta), 1)
 		else:
-			velocity = lerp(velocity, swim(delta), 0.1)
+			velocity = lerp(velocity, swim(delta) + apply_gravity(delta), 0.1)
 	move_and_slide()
 
 
@@ -78,3 +86,5 @@ func swim(delta: float) -> Vector3:
 	#print(move_dir)
 	walk_vel = walk_vel.move_toward(walk_dir * speed * Vector3(move_dir.x, -vert_dir, move_dir.y).length(), acceleration * delta) # calculate walking velocity
 	return walk_vel
+func apply_gravity(delta: float) -> Vector3:
+	return Vector3(0, grav_vel, 0)

@@ -90,6 +90,11 @@ func _ready() -> void:
 
 
 func _process(delta:float) -> void:
+	if player_is_surfaced:
+		GlobalVar.player_is_surfaced = true
+	else: 
+		GlobalVar.player_is_surfaced = false
+	
 	var camera := get_viewport().get_camera_3d()
 	
 	if not ocean.initialized:
