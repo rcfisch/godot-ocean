@@ -59,4 +59,4 @@ down={
 
 [rendering]
 
-limits/global_shader_variables/buffer_size=131072
+limits/global_shader_variables/buffer_size=1048576

@@ -1,0 +1,14 @@
+[remap]
+
+importer="glsl"
+type="RDShaderFile"
+uid="uid://cmfhk84x1pdag"
+path="res://.godot/imported/kelp_compute.glsl-d099b2d9779a753bd13211ca1ad9380a.res"
+
+[deps]
+
+source_file="res://materials/shaders/kelp_compute.glsl"
+dest_files=["res://.godot/imported/kelp_compute.glsl-d099b2d9779a753bd13211ca1ad9380a.res"]
+
+[params]
+

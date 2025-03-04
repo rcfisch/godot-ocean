@@ -13,5 +13,5 @@ my_data_buffer;
 // The code we want to execute in each invocation
 void main() {
     // gl_GlobalInvocationID.x uniquely identifies this invocation across all work groups
-    my_data_buffer.data[gl_GlobalInvocationID.x] *= 2.0;
+    my_data_buffer.data[gl_GlobalInvocationID.x] = 2;
 }

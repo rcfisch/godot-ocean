@@ -52,7 +52,7 @@ func _walk(delta: float) -> Vector3:
 func swim(delta: float) -> Vector3:
 	move_dir = Input.get_vector("move_left", "move_right", "move_forward", "move_backwards") # get input direction
 	vert_dir = Input.get_axis("up","down")
-	var _forward: Vector3 = camera.global_transform.basis * Vector3(move_dir.x, -vert_dir, move_dir.y) # get a vector for the direction you're facing
+	var _forward: Vector3 = camera.global_transform.basis * Vector3(move_dir.x, 0, move_dir.y) # get a vector for the direction you're facing
 	var walk_dir: Vector3 = _forward.normalized() # normalize vector and get move direction
 	#print(move_dir)
 	walk_vel = walk_vel.move_toward(walk_dir * speed * Vector3(move_dir.x, -vert_dir, move_dir.y).length(), acceleration * delta) # calculate walking velocity
