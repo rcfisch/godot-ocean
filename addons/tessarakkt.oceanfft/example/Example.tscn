@@ -71,7 +71,7 @@ shader_parameter/gravity = Vector3(20, -9.8, 0)
 shader_parameter/initial_linear_velocity_min = 25.0
 shader_parameter/initial_linear_velocity_max = 35.0
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5bfsg"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_eac2y"]
 render_priority = 1
 transparency = 1
 shading_mode = 0
@@ -83,7 +83,7 @@ particles_anim_v_frames = 1
 particles_anim_loop = false
 
 [sub_resource type="QuadMesh" id="QuadMesh_p5o28"]
-material = SubResource("StandardMaterial3D_5bfsg")
+material = SubResource("StandardMaterial3D_eac2y")
 size = Vector2(15, 15)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_gc8pj"]
@@ -109,7 +109,7 @@ shader_parameter/gravity = Vector3(20, -9.8, 0)
 shader_parameter/initial_linear_velocity_min = 20.0
 shader_parameter/initial_linear_velocity_max = 30.0
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5gdxj"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_n0vv4"]
 render_priority = 1
 transparency = 1
 shading_mode = 0
@@ -121,7 +121,7 @@ particles_anim_v_frames = 1
 particles_anim_loop = false
 
 [sub_resource type="QuadMesh" id="QuadMesh_g2dg2"]
-material = SubResource("StandardMaterial3D_5gdxj")
+material = SubResource("StandardMaterial3D_n0vv4")
 size = Vector2(15, 15)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_awrh8"]
@@ -137,7 +137,7 @@ shader_parameter/turbulence_initial_displacement_max = 0.0
 shader_parameter/turbulence_noise_speed_random = 0.0
 shader_parameter/turbulence_noise_speed = Vector3(0.5, 0.5, 0.5)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lmjtv"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_mqlll"]
 transparency = 1
 shading_mode = 0
 albedo_color = Color(1, 1, 1, 0.396078)
@@ -148,7 +148,7 @@ particles_anim_v_frames = 1
 particles_anim_loop = false
 
 [sub_resource type="QuadMesh" id="QuadMesh_x0k2k"]
-material = SubResource("StandardMaterial3D_lmjtv")
+material = SubResource("StandardMaterial3D_mqlll")
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_h8ile"]
 lifetime_randomness = 0.2
@@ -180,13 +180,13 @@ expand_margin_bottom = 10.0
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_thv8h"]
 
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_xvh5c"]
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_eac2y"]
 seamless = true
 noise = SubResource("FastNoiseLite_thv8h")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_6utjj"]
 shader = ExtResource("14_vnu5r")
-shader_parameter/noise_texture = SubResource("NoiseTexture2D_xvh5c")
+shader_parameter/noise_texture = SubResource("NoiseTexture2D_eac2y")
 shader_parameter/distortion_speed = 5.0
 shader_parameter/distortion_amount = 1.0
 
