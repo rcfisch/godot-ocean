@@ -6,6 +6,7 @@ extends CharacterBody3D
 @export_range(10, 400, 1) var acceleration : float = 100 # m/s^2
 
 @export_range(0.1, 3.0, 0.1, "or_greater") var camera_sens: float = 1
+@export var drag : float = 0.3 # Lerp value: 0 = no drag, 1 = instant stop
 
 var mouse_captured: bool = false
 
@@ -27,6 +28,14 @@ func _input(event: InputEvent) -> void:
  			
 	
 func _physics_process(delta: float) -> void:
+	if Input.is_action_pressed("sprint"):
+		speed = 350
+		acceleration = 1000
+		drag = 1
+	else: 
+		speed = 35
+		acceleration = 100
+		drag = 0.3
 	if is_on_floor():
 		velocity = _walk(delta)
 	else:
@@ -60,7 +69,6 @@ func swim_old(delta: float) -> Vector3:
 	#print(move_dir)
 	walk_vel = walk_vel.move_toward(walk_dir * speed * Vector3(move_dir.x, -vert_dir, move_dir.y).length(), acceleration * delta) # calculate walking velocity
 	return walk_vel
-
 func swim(delta: float) -> Vector3:
 	move_dir = Input.get_vector("move_left", "move_right", "move_forward", "move_backwards") # get input direction
 	vert_dir = Input.get_axis("up","down")
