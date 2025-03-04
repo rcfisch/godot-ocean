@@ -1,0 +1,14 @@
+[remap]
+
+importer="glsl"
+type="RDShaderFile"
+uid="uid://cmfhk84x1pdag"
+path="res://.godot/imported/seaweed.glsl-3fb20a4b707a7553f50c218b10457782.res"
+
+[deps]
+
+source_file="res://materials/shaders/seaweed.glsl"
+dest_files=["res://.godot/imported/seaweed.glsl-3fb20a4b707a7553f50c218b10457782.res"]
+
+[params]
+

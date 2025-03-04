@@ -36,7 +36,7 @@ horizontal_dimension = 512
 time_scale = 1.1
 cascade_ranges = Array[Vector2]([Vector2(0, 0.03), Vector2(0.03, 0.15), Vector2(0.15, 1)])
 cascade_scales = Array[float]([3.23607, 1.61803, 0.5])
-planetary_curve_strength = 1e-06
+planetary_curve_strength = 0.0004048
 amplitude_scale_min = 0.25
 amplitude_scale_max = 1.0
 amplitude_scale_fade_distance = 12000.0
@@ -209,13 +209,12 @@ quad_size = 32768.0
 ranges = Array[float]([250.0, 500.0, 1900.0, 3800.0, 7600.0, 15200.0, 30400.0, 60800.0])
 material = ExtResource("5_0jjw4")
 
-[node name="FloatingRectangle" parent="." node_paths=PackedStringArray("environment") instance=ExtResource("6_q2mn5")]
+[node name="FloatingRectangle" parent="." instance=ExtResource("6_q2mn5")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 52.6454)
 mass = 5000.0
 gravity_scale = 4.0
-environment = NodePath("..")
 
-[node name="MotorVesselBody3D" parent="." node_paths=PackedStringArray("environment") instance=ExtResource("7_lob4t")]
+[node name="MotorVesselBody3D" parent="." instance=ExtResource("7_lob4t")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 112, 0, 0)
 mass = 5000.0
 gravity_scale = 4.0
@@ -224,7 +223,6 @@ center_of_mass = Vector3(0, -5, 0)
 thrust_power_main = 25000.0
 max_rudder_force = 3000.0
 buoyancy_multiplier = 35000.0
-environment = NodePath("..")
 
 [node name="Camera3D" type="Camera3D" parent="MotorVesselBody3D" node_paths=PackedStringArray("reflection_probe")]
 transform = Transform3D(1, 0, 0, 0, 0.906308, 0.422618, 0, -0.422618, 0.906308, 0, 24, 0)

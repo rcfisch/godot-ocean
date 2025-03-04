@@ -78,7 +78,7 @@ noise = SubResource("FastNoiseLite_thv8h")
 shader = ExtResource("14_b87ru")
 shader_parameter/noise_texture = SubResource("NoiseTexture2D_eac2y")
 shader_parameter/distortion_speed = 5.0
-shader_parameter/distortion_amount = 1.0
+shader_parameter/distortion_amount = 2.0
 
 [node name="OceanEnvironment" type="WorldEnvironment" node_paths=PackedStringArray("sun_light", "sky_light", "underwater_particles", "underwater_post_proc")]
 environment = ExtResource("1_83ilc")
@@ -124,7 +124,6 @@ light_energy = 0.5
 
 [node name="DirectionalLight3D_Sky" type="DirectionalLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 2.5, 0)
-visible = false
 light_energy = 2.5
 
 [node name="PostProcessingLayer" type="CanvasLayer" parent="."]
