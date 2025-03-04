@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://c7dttfdeyak38"]
+
+[ext_resource type="PackedScene" uid="uid://jgchoanlbffg" path="res://scenes/player/player.tscn" id="1_fbogp"]
+
+[node name="Testing" type="Node3D"]
+
+[node name="Player" parent="." instance=ExtResource("1_fbogp")]
+
+[node name="CSGCylinder3D" type="CSGCylinder3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, -4)
