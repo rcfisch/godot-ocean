@@ -1,10 +1,11 @@
-[gd_scene load_steps=18 format=3 uid="uid://dmtmj2mj5cy6s"]
+[gd_scene load_steps=19 format=3 uid="uid://dmtmj2mj5cy6s"]
 
 [ext_resource type="Environment" uid="uid://drui1tvkk7b7q" path="res://addons/tessarakkt.oceanfft/example/Environment.tres" id="1_83ilc"]
 [ext_resource type="Script" uid="uid://dllafjboi8r3j" path="res://addons/tessarakkt.oceanfft/components/OceanEnvironment.gd" id="2_8s3rs"]
 [ext_resource type="Material" uid="uid://cmyo0unntq078" path="res://addons/tessarakkt.oceanfft/Ocean.tres" id="3_m06cm"]
 [ext_resource type="Script" uid="uid://bil1mye5f6ctb" path="res://addons/tessarakkt.oceanfft/components/Ocean3D.gd" id="4_3y5ut"]
 [ext_resource type="Script" uid="uid://cvi22751mer42" path="res://addons/tessarakkt.oceanfft/components/QuadTree3D.gd" id="5_3bvmv"]
+[ext_resource type="PackedScene" uid="uid://jgchoanlbffg" path="res://scenes/player/player.tscn" id="9_ygioq"]
 [ext_resource type="Shader" uid="uid://gaempwuihbqm" path="res://addons/tessarakkt.oceanfft/shaders/UnderwaterParticles.gdshader" id="11_nxx8a"]
 [ext_resource type="Texture2D" uid="uid://b4cb3vkqormjf" path="res://addons/tessarakkt.oceanfft/graphics/bubble_6_grayscale.png" id="12_s4usu"]
 [ext_resource type="Shader" uid="uid://mxxegenjqej2" path="res://addons/tessarakkt.oceanfft/shaders/UnderwaterPostProc.gdshader" id="14_b87ru"]
@@ -137,3 +138,5 @@ anchor_bottom = 1.0
 offset_bottom = 2.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="Player" parent="." instance=ExtResource("9_ygioq")]
