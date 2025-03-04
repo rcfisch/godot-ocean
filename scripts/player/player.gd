@@ -19,10 +19,12 @@ func _ready() -> void:
 	camera.make_current()
 	capture_mouse()
 	
-func _unhandled_input(event: InputEvent) -> void:
+func _input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion:
 		look_dir = event.relative * 0.001
-		if mouse_captured: _rotate_camera()
+		if mouse_captured: 
+			_rotate_camera()
+ 			
 	
 func _physics_process(delta: float) -> void:
 	if is_on_floor():
@@ -52,6 +54,6 @@ func swim(delta: float) -> Vector3:
 	vert_dir = Input.get_axis("up","down")
 	var _forward: Vector3 = camera.global_transform.basis * Vector3(move_dir.x, -vert_dir, move_dir.y) # get a vector for the direction you're facing
 	var walk_dir: Vector3 = _forward.normalized() # normalize vector and get move direction
-	print(move_dir)
+	#print(move_dir)
 	walk_vel = walk_vel.move_toward(walk_dir * speed * Vector3(move_dir.x, -vert_dir, move_dir.y).length(), acceleration * delta) # calculate walking velocity
 	return walk_vel
