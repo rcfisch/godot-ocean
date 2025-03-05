@@ -7,16 +7,18 @@ extends CharacterBody3D
 
 @export_range(0.1, 3.0, 0.1, "or_greater") var camera_sens: float = 1
 @export var drag : float = 0.3 # Lerp value: 0 = no drag, 1 = instant stop
-@export var gravity : float = 10
+@export var gravity : float = 5
 @export var max_fall_speed : float = 200
 
 var mouse_captured: bool = false
 
+var entered_water_cooldown : float = 0
 var move_dir: Vector2 # Input direction for movement
 var look_dir: Vector2 # Input direction for look/aim
 var vert_dir: int # Input direction for moving up/down
 var walk_vel: Vector3 # Walking velocity 
 var grav_vel: float # Gravity velocity 
+var started_falling : bool = false
 @onready var camera : Camera3D = $Camera
 
 func _ready() -> void:
@@ -47,10 +49,21 @@ func _physics_process(delta: float) -> void:
 	if is_on_floor():
 		velocity = _walk(delta)
 	else:
-		if Input.is_action_pressed("down") or Input.is_action_pressed("up") or Input.is_action_pressed("move_left") or Input.is_action_pressed("move_right") or Input.is_action_pressed("move_backwards") or Input.is_action_pressed("move_forward"):
-			velocity = lerp(velocity, swim(delta) + apply_gravity(delta), 1)
+		if GlobalVar.player_is_surfaced:
+			velocity = lerp(velocity, air_control(delta) + apply_gravity(delta), 0.1)
+			entered_water_cooldown = 40
+			swim(delta)
 		else:
-			velocity = lerp(velocity, swim(delta) + apply_gravity(delta), 0.1)
+			entered_water_cooldown = max(0, entered_water_cooldown - 1)
+			if entered_water_cooldown > 20:
+				velocity = lerp(velocity, swim(delta) + apply_gravity(delta), 0.1)
+			elif entered_water_cooldown > 0:
+				velocity = lerp(velocity, air_control(delta) + apply_gravity(delta), 0.1)
+			else:
+				if Input.is_action_pressed("down") or Input.is_action_pressed("up") or Input.is_action_pressed("move_left") or Input.is_action_pressed("move_right") or Input.is_action_pressed("move_backwards") or Input.is_action_pressed("move_forward"):
+					velocity = lerp(velocity, swim(delta) + apply_gravity(delta), 0.7)
+				else:
+					velocity = lerp(velocity, swim(delta) + apply_gravity(delta), 0.1)
 	move_and_slide()
 
 
@@ -69,22 +82,28 @@ func _walk(delta: float) -> Vector3:
 	var walk_dir: Vector3 = Vector3(_forward.x, 0, _forward.z).normalized() # normalize vector and get walk direction
 	walk_vel = walk_vel.move_toward(walk_dir * speed * move_dir.length(), acceleration * delta) # calculate walking velocity
 	return walk_vel
-func swim_old(delta: float) -> Vector3:
+func air_control(delta: float) -> Vector3:
 	move_dir = Input.get_vector("move_left", "move_right", "move_forward", "move_backwards") # get input direction
-	vert_dir = Input.get_axis("up","down")
 	var _forward: Vector3 = camera.global_transform.basis * Vector3(move_dir.x, 0, move_dir.y) # get a vector for the direction you're facing
-	var walk_dir: Vector3 = _forward.normalized() # normalize vector and get move direction
-	#print(move_dir)
-	walk_vel = walk_vel.move_toward(walk_dir * speed * Vector3(move_dir.x, -vert_dir, move_dir.y).length(), acceleration * delta) # calculate walking velocity
+	var walk_dir: Vector3 = Vector3(_forward.x, 0, _forward.z).normalized() # normalize vector and get walk direction
+	walk_vel = walk_vel.move_toward(walk_dir * speed * move_dir.length(), acceleration * delta) # calculate walking velocity
 	return walk_vel
 func swim(delta: float) -> Vector3:
 	move_dir = Input.get_vector("move_left", "move_right", "move_forward", "move_backwards") # get input direction
 	vert_dir = Input.get_axis("up","down")
-	var _forward: Vector3 = camera.global_transform.basis * Vector3(move_dir.x, 0, move_dir.y) # get a vector for the direction you're facing
-	_forward = Vector3(_forward.x, -vert_dir, _forward.z)
+	var _forward: Vector3 = camera.global_transform.basis * Vector3(move_dir.x, -vert_dir, move_dir.y) # get a vector for the direction you're facing
+	if vert_dir != 0:
+		_forward = Vector3(_forward.x, -vert_dir, _forward.z)
 	var walk_dir: Vector3 = _forward.normalized() # normalize vector and get move direction
 	#print(move_dir)
 	walk_vel = walk_vel.move_toward(walk_dir * speed * Vector3(move_dir.x, -vert_dir, move_dir.y).length(), acceleration * delta) # calculate walking velocity
+	if GlobalVar.player_is_surfaced and velocity.y < 0:
+		if !started_falling:
+			grav_vel = gravity
+			started_falling = true
+		walk_vel = Vector3(walk_vel.x, 0, walk_vel.z)
+	if !GlobalVar.player_is_surfaced:
+		started_falling = false
 	return walk_vel
 func apply_gravity(delta: float) -> Vector3:
 	return Vector3(0, grav_vel, 0)

@@ -6,6 +6,5 @@
 [node name="Player" type="CharacterBody3D"]
 script = ExtResource("1_dovo2")
 speed = 35.0
-gravity = 10.0
 
 [node name="Camera" parent="." instance=ExtResource("2_gmlin")]
