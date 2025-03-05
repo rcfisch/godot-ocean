@@ -3,12 +3,26 @@ extends CharacterBody3D
 
 @export_category("Player")
 @export_range(1, 35, 1) var speed : float = 10 # m/s
+@export_range(1, 100, 1) var walk_speed : float = 60 # m/s
 @export_range(10, 400, 1) var acceleration : float = 100 # m/s^2
+@export_range(10, 400, 1) var land_acceleration : float = 300 # m/s^2
 
 @export_range(0.1, 3.0, 0.1, "or_greater") var camera_sens: float = 1
 @export var drag : float = 0.3 # Lerp value: 0 = no drag, 1 = instant stop
-@export var gravity : float = 5
-@export var max_fall_speed : float = 200
+@export var gravity : float = 8
+@export var max_fall_speed : float = 180
+
+@export_category("Jump")
+@export var jump_height : float = 100
+@export var jump_seconds_to_peak : float = 3.5
+@export var jump_seconds_to_descent : float = 3
+@export var variable_jump_gravity_multiplier : float = 2
+@export var jump_buffer_frames : float
+# Jump Calculations
+@onready var jump_velocity : float = ((2.0 * jump_height) / jump_seconds_to_peak) * -1
+@onready var jump_gravity : float = ((-2.0 * jump_height) / (jump_seconds_to_peak * jump_seconds_to_peak)) * -1
+@onready var fall_gravity : float = ((-2.0 * jump_height) / (jump_seconds_to_descent * jump_seconds_to_descent)) * -1
+
 
 var mouse_captured: bool = false
 
@@ -34,9 +48,10 @@ func _input(event: InputEvent) -> void:
 	
 func _physics_process(delta: float) -> void:
 	if GlobalVar.player_is_surfaced and !is_on_floor():
-		if grav_vel < max_fall_speed:
-			grav_vel -= gravity
+		grav_vel = max(-max_fall_speed, grav_vel - gravity)
 	else: grav_vel = 0
+	#print(_get_gravity())
+	print(jump_velocity)
 	#print(GlobalVar.player_is_surfaced)
 	if Input.is_action_pressed("sprint"):
 		speed = 350
@@ -64,6 +79,8 @@ func _physics_process(delta: float) -> void:
 					velocity = lerp(velocity, swim(delta) + apply_gravity(delta), 0.7)
 				else:
 					velocity = lerp(velocity, swim(delta) + apply_gravity(delta), 0.1)
+	if Input.is_action_just_pressed("up"):
+		jump()
 	move_and_slide()
 
 
@@ -80,8 +97,10 @@ func _walk(delta: float) -> Vector3:
 	move_dir = Input.get_vector("move_left", "move_right", "move_forward", "move_backwards") # get input direction
 	var _forward: Vector3 = camera.global_transform.basis * Vector3(move_dir.x, 0, move_dir.y) # get a vector for the direction you're facing
 	var walk_dir: Vector3 = Vector3(_forward.x, 0, _forward.z).normalized() # normalize vector and get walk direction
-	walk_vel = walk_vel.move_toward(walk_dir * speed * move_dir.length(), acceleration * delta) # calculate walking velocity
-	return walk_vel
+	walk_vel = walk_vel.move_toward(walk_dir * speed * move_dir.length(), land_acceleration * delta) # calculate walking velocity
+	if move_dir != Vector2.ZERO:
+		return walk_vel
+	else: return lerp(velocity, Vector3.ZERO, 0.2)
 func air_control(delta: float) -> Vector3:
 	move_dir = Input.get_vector("move_left", "move_right", "move_forward", "move_backwards") # get input direction
 	var _forward: Vector3 = camera.global_transform.basis * Vector3(move_dir.x, 0, move_dir.y) # get a vector for the direction you're facing
@@ -107,3 +126,6 @@ func swim(delta: float) -> Vector3:
 	return walk_vel
 func apply_gravity(delta: float) -> Vector3:
 	return Vector3(0, grav_vel, 0)
+func jump():
+	if is_on_floor():
+		velocity.y = jump_height

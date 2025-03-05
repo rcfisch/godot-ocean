@@ -18,10 +18,6 @@ config/features=PackedStringArray("4.4", "Forward Plus")
 
 GlobalVar="*res://scripts/global_variables.gd"
 
-[display]
-
-window/size/mode=4
-
 [input]
 
 camera_mode_free={
