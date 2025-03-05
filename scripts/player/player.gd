@@ -27,6 +27,8 @@ var started_falling : bool = false
 var land_friction : float = 10
 var water_friction : float = 4
 var air_friction : float = 2
+var rv : Vector3
+var stored_vel : Vector3
 @onready var camera : Camera3D = $Camera
 
 func _ready() -> void:
@@ -41,19 +43,23 @@ func _input(event: InputEvent) -> void:
  			
 	
 func _physics_process(delta: float) -> void:
+	velocity -= stored_vel
 	swim(delta)
-	print(buoy_vel)
 	if is_on_floor():
 		velocity = _walk(delta)
 	else:
-			velocity += swim(delta).normalized() * speed
+			rv += swim(delta).normalized() * speed
 # Ensure velocity doesn't exceed max_speed
-	if velocity.length() > max_speed:
-		velocity = velocity.normalized() * max_speed
+	if !Input.get_vector("move_left", "move_right", "move_forward", "move_backwards") == Vector2.ZERO or !Input.get_axis("up","down") == 0:
+		if rv.length() > max_speed:
+			rv = rv.normalized() * max_speed
+		
 	apply_gravity(delta)
-	apply_buoyancy(delta)
-	apply_friction(delta)
 	calculate_y_vel(delta)
+	apply_friction(delta)
+	print(velocity)
+	stored_vel = rv
+	velocity += rv
 	move_and_slide()
 
 
@@ -90,22 +96,18 @@ func swim(delta: float) -> Vector3:
 	walk_vel = walk_dir * speed * Vector3(move_dir.x, -vert_dir, move_dir.y).length()
 	return walk_vel 
 func apply_friction(delta):
-	if Input.get_vector("move_left", "move_right", "move_forward", "move_backwards") == Vector2.ZERO and Input.get_axis("up","down") == 0:
-		velocity = lerp(velocity, Vector3.ZERO, 0.1)
-func apply_gravity(delta):
-	if GlobalVar.player_is_surfaced and !surfaced:
-		surfaced = true
-		grav_vel = 0
-	if !GlobalVar.player_is_surfaced and surfaced:
-		surfaced = false
-		if grav_vel > -60:
-			buoy_vel = -grav_vel
-	grav_vel = max(-max_fall_speed, grav_vel - gravity)
-func apply_buoyancy(delta):
 	if !GlobalVar.player_is_surfaced:
-		buoy_vel = min(max_fall_speed, buoy_vel + gravity)
+		velocity = lerp(velocity, Vector3.ZERO, 0.1)
+	else: velocity = lerp(velocity, Vector3.ZERO, 0.2)
+	if Input.get_vector("move_left", "move_right", "move_forward", "move_backwards") == Vector2.ZERO and Input.get_axis("up","down") == 0:
+		if !GlobalVar.player_is_surfaced:
+			rv = lerp(rv, Vector3.ZERO, 0.1)
+		else: rv = lerp(rv, Vector3.ZERO, 0.2)
+func apply_gravity(delta):
+	if GlobalVar.player_is_surfaced:
+		grav_vel = max(-max_fall_speed, grav_vel - gravity)
 	else:
-		buoy_vel = 0
+		grav_vel = 0
 func calculate_y_vel(delta):
-	velocity.y = velocity.y + grav_vel + buoy_vel
+	velocity.y = velocity.y + grav_vel
 	
