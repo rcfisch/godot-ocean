@@ -2,7 +2,8 @@ class_name Player
 extends CharacterBody3D
 
 @export_category("Player")
-@export_range(1, 35, 1) var speed : float = 10 # m/s
+@export_range(1, 35, 1) var speed : float = 5 # m/s
+@export_range(1, 300, 1) var max_speed : float = 70 # m/s
 @export_range(1, 100, 1) var walk_speed : float = 60 # m/s
 @export_range(10, 400, 1) var acceleration : float = 100 # m/s^2
 @export_range(10, 400, 1) var land_acceleration : float = 300 # m/s^2
@@ -12,27 +13,20 @@ extends CharacterBody3D
 @export var gravity : float = 8
 @export var max_fall_speed : float = 180
 
-@export_category("Jump")
-@export var jump_height : float = 100
-@export var jump_seconds_to_peak : float = 3.5
-@export var jump_seconds_to_descent : float = 3
-@export var variable_jump_gravity_multiplier : float = 2
-@export var jump_buffer_frames : float
-# Jump Calculations
-@onready var jump_velocity : float = ((2.0 * jump_height) / jump_seconds_to_peak) * -1
-@onready var jump_gravity : float = ((-2.0 * jump_height) / (jump_seconds_to_peak * jump_seconds_to_peak)) * -1
-@onready var fall_gravity : float = ((-2.0 * jump_height) / (jump_seconds_to_descent * jump_seconds_to_descent)) * -1
-
-
 var mouse_captured: bool = false
 
-var entered_water_cooldown : float = 0
+var water_entered = false
+var surfaced = false
 var move_dir: Vector2 # Input direction for movement
 var look_dir: Vector2 # Input direction for look/aim
 var vert_dir: int # Input direction for moving up/down
 var walk_vel: Vector3 # Walking velocity 
 var grav_vel: float # Gravity velocity 
+var buoy_vel: float # Buoyancy velocity 
 var started_falling : bool = false
+var land_friction : float = 10
+var water_friction : float = 4
+var air_friction : float = 2
 @onready var camera : Camera3D = $Camera
 
 func _ready() -> void:
@@ -47,40 +41,19 @@ func _input(event: InputEvent) -> void:
  			
 	
 func _physics_process(delta: float) -> void:
-	if GlobalVar.player_is_surfaced and !is_on_floor():
-		grav_vel = max(-max_fall_speed, grav_vel - gravity)
-	else: grav_vel = 0
-	#print(_get_gravity())
-	print(jump_velocity)
-	#print(GlobalVar.player_is_surfaced)
-	if Input.is_action_pressed("sprint"):
-		speed = 350
-		acceleration = 1000
-		drag = 1
-	else: 
-		speed = 35
-		acceleration = 100
-		drag = 0.3
+	swim(delta)
+	print(buoy_vel)
 	if is_on_floor():
 		velocity = _walk(delta)
 	else:
-		if GlobalVar.player_is_surfaced:
-			velocity = lerp(velocity, air_control(delta) + apply_gravity(delta), 0.1)
-			entered_water_cooldown = 40
-			swim(delta)
-		else:
-			entered_water_cooldown = max(0, entered_water_cooldown - 1)
-			if entered_water_cooldown > 20:
-				velocity = lerp(velocity, swim(delta) + apply_gravity(delta), 0.1)
-			elif entered_water_cooldown > 0:
-				velocity = lerp(velocity, air_control(delta) + apply_gravity(delta), 0.1)
-			else:
-				if Input.is_action_pressed("down") or Input.is_action_pressed("up") or Input.is_action_pressed("move_left") or Input.is_action_pressed("move_right") or Input.is_action_pressed("move_backwards") or Input.is_action_pressed("move_forward"):
-					velocity = lerp(velocity, swim(delta) + apply_gravity(delta), 0.7)
-				else:
-					velocity = lerp(velocity, swim(delta) + apply_gravity(delta), 0.1)
-	if Input.is_action_just_pressed("up"):
-		jump()
+			velocity += swim(delta).normalized() * speed
+# Ensure velocity doesn't exceed max_speed
+	if velocity.length() > max_speed:
+		velocity = velocity.normalized() * max_speed
+	apply_gravity(delta)
+	apply_buoyancy(delta)
+	apply_friction(delta)
+	calculate_y_vel(delta)
 	move_and_slide()
 
 
@@ -114,18 +87,25 @@ func swim(delta: float) -> Vector3:
 	if vert_dir != 0:
 		_forward = Vector3(_forward.x, -vert_dir, _forward.z)
 	var walk_dir: Vector3 = _forward.normalized() # normalize vector and get move direction
-	#print(move_dir)
-	walk_vel = walk_vel.move_toward(walk_dir * speed * Vector3(move_dir.x, -vert_dir, move_dir.y).length(), acceleration * delta) # calculate walking velocity
-	if GlobalVar.player_is_surfaced and velocity.y < 0:
-		if !started_falling:
-			grav_vel = gravity
-			started_falling = true
-		walk_vel = Vector3(walk_vel.x, 0, walk_vel.z)
+	walk_vel = walk_dir * speed * Vector3(move_dir.x, -vert_dir, move_dir.y).length()
+	return walk_vel 
+func apply_friction(delta):
+	if Input.get_vector("move_left", "move_right", "move_forward", "move_backwards") == Vector2.ZERO and Input.get_axis("up","down") == 0:
+		velocity = lerp(velocity, Vector3.ZERO, 0.1)
+func apply_gravity(delta):
+	if GlobalVar.player_is_surfaced and !surfaced:
+		surfaced = true
+		grav_vel = 0
+	if !GlobalVar.player_is_surfaced and surfaced:
+		surfaced = false
+		if grav_vel > -60:
+			buoy_vel = -grav_vel
+	grav_vel = max(-max_fall_speed, grav_vel - gravity)
+func apply_buoyancy(delta):
 	if !GlobalVar.player_is_surfaced:
-		started_falling = false
-	return walk_vel
-func apply_gravity(delta: float) -> Vector3:
-	return Vector3(0, grav_vel, 0)
-func jump():
-	if is_on_floor():
-		velocity.y = jump_height
+		buoy_vel = min(max_fall_speed, buoy_vel + gravity)
+	else:
+		buoy_vel = 0
+func calculate_y_vel(delta):
+	velocity.y = velocity.y + grav_vel + buoy_vel
+	

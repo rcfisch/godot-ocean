@@ -136,7 +136,7 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="Player" parent="." instance=ExtResource("9_ygioq")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 102.298, 56.9859, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -317.948, 568.202, 0)
 
 [node name="kelp_handler" type="Node" parent="."]
 script = ExtResource("10_pdh0q")
