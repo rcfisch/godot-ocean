@@ -8,8 +8,7 @@ height = 10.0
 
 [node name="Player" type="CharacterBody3D"]
 script = ExtResource("1_dovo2")
-land_acceleration = 10.0
-max_fall_speed = 600.0
+land_acceleration = 20.0
 
 [node name="Camera" parent="." instance=ExtResource("2_gmlin")]
 
