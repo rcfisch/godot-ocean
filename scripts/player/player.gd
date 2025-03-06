@@ -15,7 +15,7 @@ var max_speed : float = 70 # m/s
 
 @export_range(0.1, 3.0, 0.1, "or_greater") var camera_sens: float = 1
 @export var drag : float = 0.3 # Lerp value: 0 = no drag, 1 = instant stop
-@export var gravity : float = 10
+@export var gravity : float = 8
 @export var max_fall_speed : float = 600
 
 var mouse_captured: bool = false
@@ -29,7 +29,7 @@ var falling_grav_vel : float
 var started_falling : bool = false
 var land_friction : float = 15
 var water_friction : float = 3
-var air_friction : float = 1.5
+var air_friction : float = 1
 var rv : Vector3 # PLAYER'S RELATIVE VELOCITY
 var stored_vel : Vector3
 @onready var camera : Camera3D = $Camera
@@ -46,6 +46,8 @@ func _input(event: InputEvent) -> void:
  			
 	
 func _physics_process(delta: float) -> void:
+	if Input.is_action_just_released("sprint"):
+		velocity += rv
 	if Input.is_action_pressed("sprint"):
 		speed = dash_accel
 		max_speed = dash_speed_cap
@@ -68,6 +70,8 @@ func _physics_process(delta: float) -> void:
 	calculate_y_vel(delta)
 	stored_vel = rv
 	velocity += rv
+	if Input.is_action_just_released("sprint"):
+		velocity -= rv
 	apply_friction(delta)
 	print(velocity)
 	move_and_slide()
