@@ -1,15 +1,24 @@
-[gd_scene load_steps=3 format=3 uid="uid://bar8u54pfsp50"]
+[gd_scene load_steps=4 format=3 uid="uid://bar8u54pfsp50"]
 
-[ext_resource type="Script" uid="uid://b4lojju3pmnfw" path="res://scripts/entities/floating_box.gd" id="1_wo0d4"]
+[ext_resource type="Script" uid="uid://c7uvewfwpauqx" path="res://addons/tessarakkt.oceanfft/components/BuoyancyBody3D.gd" id="1_4cvcl"]
+[ext_resource type="Script" uid="uid://cnhr2se8uj6mb" path="res://addons/tessarakkt.oceanfft/components/BuoyancyProbe3D.gd" id="2_nqtnd"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_v18qh"]
 size = Vector3(20, 20, 20)
 
-[node name="Platform" type="CharacterBody3D"]
-script = ExtResource("1_wo0d4")
+[node name="Platform" type="RigidBody3D"]
+mass = 1000.0
+script = ExtResource("1_4cvcl")
+buoyancy_multiplier = 10.0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("BoxShape3D_v18qh")
 
 [node name="CSGBox3D" type="CSGBox3D" parent="."]
 size = Vector3(20, 20, 20)
+
+[node name="BuoyancySphere3D" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -10, 0)
+gizmo_extents = 2.0
+script = ExtResource("2_nqtnd")
+max_cascade = 2
